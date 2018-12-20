@@ -25,8 +25,10 @@ const reactiveSearchSettings = {
     title: 'Filter by ratings',
     dataField: 'rating',
     data: [
-      { start: 4, end: 5, label: '4 stars and up' },
-      { start: 3, end: 5, label: '3 stars and up' },
+      { start: '4', end: '5', label: '4 stars and up' },
+      { start: '3', end: '5', label: '3 stars and up' },
+      { start: '2', end: '5', label: '2 stars and up' },
+      { start: '1', end: '5', label: 'see all ratings' },
     ],
     defaultSelected: '4 stars and up',
   },
@@ -35,27 +37,30 @@ const reactiveSearchSettings = {
     componentId: 'result',
     title: 'Results',
     dataField: 'model',
-    size: 12,
     from: 0,
-    size: 5,
+    size: 6,
     pagination: true,
     onData: data => ({
-      image:data.image,
-      description:(
+      image: data.image,
+      description: (
         <div>
           <div className="price">${data.price}</div>
-					<p className="info">{data.brand} · {data.model}</p>
-          <p>year:{data.year} . {data.fuelType}</p>
+          <p className="info">
+            {data.brand} · {data.model}
+          </p>
+          <p>
+            year:{data.year} . {data.fuelType}
+          </p>
         </div>
-      )      
+      ),
     }),
     react: { and: ['searchbox', 'ratingsfilter'] },
     innerClass: {
-			resultStats: 'result-stats',
-			list: 'list',
-			listItem: 'list-item',
-			image: 'image',
-		},
+      resultStats: 'result-stats',
+      list: 'list',
+      listItem: 'list-item',
+      image: 'image',
+    },
   },
 }
 
@@ -71,7 +76,11 @@ class SearchReactive extends Component {
           type: 'CategorySearch',
           source: CategorySearch,
         },
-        
+        {
+          ...reactiveSearchSettings.searchSingleRange,
+          type: 'SingleRange',
+          source: SingleRange,
+        },
         {
           ...reactiveSearchSettings.resultsCard,
           type: 'ResultCard',
@@ -81,18 +90,21 @@ class SearchReactive extends Component {
       null,
       reactiveSearchSettings.settings
     )
-    this.setState({reactivedata:result})
+    this.setState({ reactivedata: result })
   }
   render() {
-    const {reactivedata}= this.state
+    const { reactivedata } = this.state
     return (
       <div className="container">
-        <ReactiveBase {...reactiveSearchSettings.settings} initialState={reactivedata}>
+        <ReactiveBase
+          {...reactiveSearchSettings.settings}
+          initialState={reactivedata}>
           <nav className="nav">
             <div className="title">
               <CategorySearch {...reactiveSearchSettings.dataSearcher} />
             </div>
-            <ResultCard {...reactiveSearchSettings.resultsCard}/>
+            <SingleRange {...reactiveSearchSettings.searchSingleRange} />
+            <ResultCard {...reactiveSearchSettings.resultsCard} />
           </nav>
         </ReactiveBase>
       </div>
